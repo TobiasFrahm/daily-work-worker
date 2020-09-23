@@ -2,7 +2,7 @@
 
 # Usage
 # add alias in .xxxxrc
-# alias  <name> = "python3 absolute/path/to/backup.py
+# alias  <name> = "python3 absolute/path/to/dailywork_worker.py
 # author Tobias Frahm
 
 import getpass
