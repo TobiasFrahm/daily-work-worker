@@ -9,7 +9,7 @@ import getpass
 import subprocess
 
 
-def check(question, command, default: bool):
+def interactive_subprocess(question, command, default: bool):
     if default:
         __default = " (Y/n):"
     else:
@@ -25,12 +25,12 @@ def check(question, command, default: bool):
 
 def main():
     # create backup before update/upgrade
-    check("Create Backup",
+    interactive_subprocess("Create Backup",
           "borg create --stats --progress /run/media/frahmt/backup/t495s-frahmt/::home$(date +%d%m%y) /home", True)
     # system update simular to pacman -Syu.
-    check("Update System?", "yay -Syu", True)
-    check("Failed services?", "systemctl --failed", True)
-    check("Showing journalctl output?", "journalctl -p 3 -xb", False)
+    interactive_subprocess("Update System?", "yay -Syu", True)
+    interactive_subprocess("Failed services?", "systemctl --failed", True)
+    interactive_subprocess("Showing journalctl output?", "journalctl -p 3 -xb", False)
     print("All jobs done, have a nice day {}".format(getpass.getuser()))
 
 
