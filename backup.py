@@ -15,7 +15,7 @@ def check(question, command, default: bool):
     else:
         __default = " (y/N):"
     res = input(question + __default)
-    if "y" in res.lower() or "yes" in res.lower():
+    if "y" in res.lower() or "yes" in res.lower() or default and not res:
         try:
             subprocess.run(command, shell=True)
         except OSError as e:
