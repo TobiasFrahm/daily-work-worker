@@ -5,7 +5,6 @@
 # alias  <name> = "python3 absolute/path/to/backup.py
 # author Tobias Frahm
 
-import os
 import getpass
 import subprocess
 
@@ -34,7 +33,7 @@ def main():
 
     print("Failed services?")
     try:
-        os.system("systemctl --failed")
+        subprocess.run("systemctl --failed")
     except OSError as e:
         print(e)
         exit(-1)
