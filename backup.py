@@ -27,17 +27,9 @@ def main():
     # create backup before update/upgrade
     check("Create Backup",
           "borg create --stats --progress /run/media/frahmt/backup/t495s-frahmt/::home$(date +%d%m%y) /home", True)
-
     # system update simular to pacman -Syu.
     check("Update System?", "yay -Syu", True)
-
-    print("Failed services?")
-    try:
-        subprocess.run("systemctl --failed")
-    except OSError as e:
-        print(e)
-        exit(-1)
-
+    check("Failed services?", "systemctl --failed", True)
     check("Showing journalctl output?", "journalctl -p 3 -xb", False)
     print("All jobs done, have a nice day {}".format(getpass.getuser()))
 
