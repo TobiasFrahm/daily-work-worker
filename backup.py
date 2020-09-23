@@ -7,6 +7,7 @@
 
 import os
 import getpass
+import subprocess
 
 
 def check(question, command, default: bool):
@@ -17,7 +18,7 @@ def check(question, command, default: bool):
     res = input(question + __default)
     if "y" in res.lower() or "yes" in res.lower():
         try:
-            os.system(command)
+            subprocess.run(command, shell=True)
         except OSError as e:
             print(e)
             exit(-1)
