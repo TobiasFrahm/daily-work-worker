@@ -39,7 +39,7 @@ def main():
     interactive_subprocess("Create Backup",
                            "borg create --stats --progress /run/media/frahmt/backup/t495s-frahmt/::home$(date +%d%m%y) /home",
                            True)
-    # system update simular to pacman -Syu.
+    # system update similar to pacman -Syu.
     interactive_subprocess("Update System?", "yay -Syu", True)
     interactive_subprocess("Failed services?", "systemctl --failed", True)
     interactive_subprocess("Showing journalctl output?", "journalctl -p 3 -xb", False)
@@ -50,6 +50,7 @@ def main():
         print(pe)
         exit(-1)
 
+    # custom commands
     for section in custom_commands.sections():
         print(custom_commands[section])
         interactive_subprocess(custom_commands[section]['question'], custom_commands[section]['command'],
