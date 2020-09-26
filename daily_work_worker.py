@@ -68,7 +68,7 @@ if __name__ == '__main__':
                                      usage='python3  daily_work_worker.py [options]')
     parser.add_argument('-c', '--custom', help='[ enable | disable ] custom commands', default='disable')
     parser.add_argument('-s', '--source', help='folder to backup', default='/home')
-    parser.add_argument('repo', help='/path/to/repo')
+    parser.add_argument('repo', help='/path/to/borg/repo')
     args = parser.parse_args()
     main(args.source, args.repo)
 
