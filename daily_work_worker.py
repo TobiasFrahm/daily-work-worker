@@ -8,6 +8,7 @@
 import getpass
 import subprocess
 import configparser
+import argparse
 
 
 def interactive_subprocess(question, command, default: bool):
@@ -34,15 +35,7 @@ def string_to_bool(__string):
         raise ValueError("Expected True or False in custom_commands.cfg File")
 
 
-def main():
-    # create backup before update/upgrade
-    interactive_subprocess("Create Backup",
-                           "borg create --stats --progress /run/media/frahmt/backup/t495s-frahmt/::home$(date +%d%m%y) /home",
-                           True)
-    # system update similar to pacman -Syu.
-    interactive_subprocess("Update System?", "yay -Syu", True)
-    interactive_subprocess("Failed services?", "systemctl --failed", True)
-    interactive_subprocess("Showing journalctl output?", "journalctl -p 3 -xb", False)
+def exec_custom_command():
     try:
         custom_commands = configparser.ConfigParser()
         custom_commands.read("custom_commands.cfg")
@@ -56,8 +49,26 @@ def main():
         interactive_subprocess(custom_commands[section]['question'], custom_commands[section]['command'],
                                string_to_bool(custom_commands[section]['default']))
 
-    print("All jobs done, have a nice day {}".format(getpass.getuser()))
+
+def main():
+    # create backup before update/upgrade
+    interactive_subprocess("Create Backup",
+                           "borg create --stats --progress /run/media/frahmt/backup/t495s-frahmt/::home$(date +%d%m%y) /home",
+                           True)
+    # system update similar to pacman -Syu.
+    interactive_subprocess("Update System?", "yay -Syu", True)
+    interactive_subprocess("Failed services?", "systemctl --failed", True)
+    interactive_subprocess("Showing journalctl output?", "journalctl -p 3 -xb", False)
 
 
 if __name__ == '__main__':
+    # optional args
+    parser = argparse.ArgumentParser(description='work work', prog='daily work worker', usage='%(prog)s [options]')
+    parser.add_argument('-c', '--custom', help='[ enable | disable ] custom commands', default='disable')
+    args = parser.parse_args()
     main()
+
+    if args.custom.lower() == 'enable':
+        exec_custom_command()
+
+    print("All jobs done, have a nice day {}".format(getpass.getuser()))
