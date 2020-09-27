@@ -5,7 +5,11 @@ All the stuff you should do on a daily bases.
 
 --------------------------------------------------------
 I use and test this with ```Linux 5.8.6-1-MANJARO x86_64 20.1 Mikah```
+# Usage
+I uses this as a simple alias in .xxxxrc file.
+Just add the line
 
+```alias  dww = "python3 absolute/path/to/daily_work_worker.py```
 # Borg Backup
 [borg](https://borgbackup.readthedocs.io/en/stable/) is a platform independent backup tool.
 The daily work worker uses borg to backup your ```/home```folder per default.
