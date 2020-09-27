@@ -5,10 +5,11 @@
 # alias  <name> = "python3 absolute/path/to/daily_work_worker.py
 # author Tobias Frahm
 
+import argparse
+import configparser
 import getpass
 import subprocess
-import configparser
-import argparse
+from pathlib import Path
 
 
 def interactive_subprocess(question, command, default: bool):
@@ -36,6 +37,7 @@ def string_to_bool(__string):
 
 
 def exec_custom_command():
+    custom_commands = []
     try:
         custom_commands = configparser.ConfigParser()
         custom_commands.read("custom_commands.cfg")
@@ -50,11 +52,15 @@ def exec_custom_command():
                                string_to_bool(custom_commands[section]['default']))
 
 
+def create_backup(source, repo):
+    # create daily_work_worker before update/upgrade
+    interactive_subprocess("Create Backup of {}".format(source),
+                           "borg create --stats --progress {}::{}$(date +%d%m%y) {}".format(repo,
+                                                                                            source.replace('/', '_'),
+                                                                                            source), True)
+
+
 def main():
-    # create backup before update/upgrade
-    interactive_subprocess("Create Backup",
-                           "borg create --stats --progress /run/media/frahmt/backup/t495s-frahmt/::home$(date +%d%m%y) /home",
-                           True)
     # system update similar to pacman -Syu.
     interactive_subprocess("Update System?", "yay -Syu", True)
     interactive_subprocess("Failed services?", "systemctl --failed", True)
@@ -63,11 +69,20 @@ def main():
 
 if __name__ == '__main__':
     # optional args
-    parser = argparse.ArgumentParser(description='work work', prog='daily work worker', usage='%(prog)s [options]')
-    parser.add_argument('-c', '--custom', help='[ enable | disable ] custom commands', default='disable')
+    parser = argparse.ArgumentParser(description='daily_work_worker, system update, custom commands',
+                                     prog='daily work worker',
+                                     usage='python3  daily_work_worker.py [options]')
+    parser.add_argument('-c', '--custom', help='custom commands', default='disable', choices=['enable', 'disable'])
+    parser.add_argument('-s', '--source', help='folder to daily_work_worker', default='/home', type=str)
+    # positional args
+    parser.add_argument('repo', help='/path/to/borg/repo')
     args = parser.parse_args()
+    for src in args.source.split(','):
+        if Path(src).exists():
+            create_backup(src, args.repo)
+        else:
+            raise ValueError("{} not found".format(src))
     main()
-
     if args.custom.lower() == 'enable':
         exec_custom_command()
 
